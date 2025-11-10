@@ -7,14 +7,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Load Firebase service account from environment variable
+// ✅ Load Firebase service account from environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// Initialize OpenAI client
+// ✅ Initialize OpenAI client with API key from environment variable
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
@@ -22,6 +22,7 @@ const client = new OpenAI({
 app.post("/chat", async (req, res) => {
   const token = req.headers.authorization?.split(" ")[1];
   try {
+    // Verify Firebase user token
     const decoded = await admin.auth().verifyIdToken(token);
     const userMessage = req.body.message;
 
@@ -42,7 +43,7 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-// IMPORTANT: Use process.env.PORT so Render can assign the port
+// ✅ IMPORTANT: Use process.env.PORT so Render can assign the port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Backend running with AI replies on port ${PORT}`);
