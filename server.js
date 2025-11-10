@@ -7,7 +7,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const serviceAccount = require("./serviceAccountKey.json");
+// Load Firebase service account from environment variable
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -41,4 +42,8 @@ app.post("/chat", async (req, res) => {
   }
 });
 
-app.listen(5000, () => console.log("✅ Backend running with AI replies on http://localhost:5000"));
+// IMPORTANT: Use process.env.PORT so Render can assign the port
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`✅ Backend running with AI replies on port ${PORT}`);
+});
